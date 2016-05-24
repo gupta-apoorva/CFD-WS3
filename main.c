@@ -74,6 +74,7 @@ int main(int argn, char** args)
    double** RS;
    double** F;
    double** G;
+   int** Flag;
    int** pgm = NULL;
    int wl;	
    int wr;
@@ -86,12 +87,6 @@ read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength
 
 pgm = read_pgm("mesh2.pgm");
 
-for (int i = 0;i<12;i++){
-for (int j = 0;j<12;j++){
-printf(" %d",pgm[i][j]);}
-printf("\n");}
-
-printf("inlet is %d",wb);
 // Creating the arrays U,V and P
   U = matrix ( 0 , imax+1 , 0 , jmax+1 );
   V = matrix ( 0 , imax+1 , 0 , jmax+1 );
@@ -102,12 +97,29 @@ printf("inlet is %d",wb);
   RS = matrix ( 0,imax+1,0,jmax+1);
   F = matrix (0,imax+1,0,jmax+1);
   G = matrix (0,imax+1,0,jmax+1);
+  Flag = imatrix (0,imax+1,0,jmax+1);
 
 // Initializing the arrays U,V,P,RS,F and G
   init_uvp( UI, VI,PI,imax, jmax,U,V,P);
   init_matrix(RS,0,imax+1,0,jmax+1,5);
   init_matrix(F,0,imax+1,0,jmax+1,0);
   init_matrix(G,0,imax+1,0,jmax+1,0);
+  init_imatrix(Flag,0,imax+1,0,jmax+1,0);
+
+  for (int i = 0; i < imax+2; ++i){
+  	for (int j = 0; j < jmax+2; ++j){
+  		if (pgm[i][j] == 0){
+  			Flag[i][j] = 1;
+  		}
+  	}
+  }
+
+  for (int j = 0; j < jmax+2; ++j){
+  	for (int i = 0; i < imax+2; ++i)
+  		printf(" %d",Flag[i][j]);
+		printf("\n");
+  		
+  	}
 
 
   double t=0;   // initialize the time
@@ -142,6 +154,7 @@ free_matrix(P,0,imax+1,0,jmax+1);
 free_matrix(RS,0,imax+1,0,jmax+1);
 free_matrix(F,0,imax+1,0,jmax+1);
 free_matrix(G,0,imax+1,0,jmax+1);
+free_imatrix(Flag,0,imax+1,0,jmax+1);
 
 
 
