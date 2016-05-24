@@ -5,6 +5,7 @@
 #include "uvp.h"
 #include "sor.h"
 #include <stdio.h>
+#include <string.h>
 
 
 /**
@@ -73,19 +74,32 @@ int main(int argn, char** args)
    double** RS;
    double** F;
    double** G;
-
+   int** pgm = NULL;
+   int wl;	
+   int wr;
+   int wt;
+   int wb;
+   
+	
 //setting the parameters
-read_parameters( "cavity100.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax, &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value);
+read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax, &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb);
 
+pgm = read_pgm("mesh2.pgm");
 
+for (int i = 0;i<12;i++){
+for (int j = 0;j<12;j++){
+printf(" %d",pgm[i][j]);}
+printf("\n");}
+
+printf("inlet is %d",wb);
 // Creating the arrays U,V and P
-	U = matrix ( 0 , imax+1 , 0 , jmax+1 );
+  U = matrix ( 0 , imax+1 , 0 , jmax+1 );
   V = matrix ( 0 , imax+1 , 0 , jmax+1 );
   P = matrix ( 0 , imax+1 , 0 , jmax+1 );
         
 
 // Creating arrays for right side of pressure poissons equation (RS) and F and G
-	RS = matrix ( 0,imax+1,0,jmax+1);
+  RS = matrix ( 0,imax+1,0,jmax+1);
   F = matrix (0,imax+1,0,jmax+1);
   G = matrix (0,imax+1,0,jmax+1);
 
@@ -128,6 +142,7 @@ free_matrix(P,0,imax+1,0,jmax+1);
 free_matrix(RS,0,imax+1,0,jmax+1);
 free_matrix(F,0,imax+1,0,jmax+1);
 free_matrix(G,0,imax+1,0,jmax+1);
+
 
 
   return 0;
