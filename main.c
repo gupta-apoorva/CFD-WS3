@@ -104,17 +104,43 @@ pgm = read_pgm("mesh2.pgm");
   init_matrix(RS,0,imax+1,0,jmax+1,5);
   init_matrix(F,0,imax+1,0,jmax+1,0);
   init_matrix(G,0,imax+1,0,jmax+1,0);
-  init_imatrix(Flag,0,imax+1,0,jmax+1,0);
+  init_imatrix(Flag,0,imax+1,0,jmax+1,1);
 
   for (int i = 0; i < imax+2; ++i){
   	for (int j = 0; j < jmax+2; ++j){
   		if (pgm[i][j] == 0){
-  			Flag[i][j] = 1;
+  			Flag[i][j] = 0;
   		}
   	}
   }
 
   for (int j = 0; j < jmax+2; ++j){
+  	for (int i = 0; i < imax+2; ++i)
+  		printf(" %d",Flag[i][j]);
+		printf("\n");
+  		
+  	}
+
+  	int dummy[imax+4][jmax+4];
+
+  	for (int j = 0; j < jmax+4; ++j){
+  	for (int i = 0; i < imax+4; ++i)
+  		dummy[i][j] = 0;
+  		}
+
+  	for (int j = 0; j < jmax+2; ++j){
+  	for (int i = 0; i < imax+2; ++i)
+  		dummy[i+1][j+1] = Flag[i][j];
+  		}
+
+	for (int i = 0; i < imax+2; ++i){
+		for (int j = 0; j < jmax+2; ++j){
+			Flag[i][j] = 16*dummy[i+1][j+1] + 8*dummy[i+1][j+2] + 4*dummy[i+1][j] + 2*dummy[i][j+1] + dummy[i+2][j+1];
+			
+		}
+	}
+
+for (int j = 0; j < jmax+2; ++j){
   	for (int i = 0; i < imax+2; ++i)
   		printf(" %d",Flag[i][j]);
 		printf("\n");
