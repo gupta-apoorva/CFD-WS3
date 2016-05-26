@@ -1,40 +1,116 @@
 #include "boundary_val.h"
+
+#DEFINE NO_SLIP 1
+#DEFINE FREE_SLIP 2
+#DEFINE OUTFLOW 3
+
 void boundaryvalues(int imax,int jmax,double **U,double **V, double** P, double** G, double** F)
 {
 	// wl wr wt wb ..... object wall NO_SLIP.
-/*
+//TODO 
+//change this function to accept flag field.
+//impliment spec_boundary_val (char *problem, int imax, int jmax, double **U, double **V), for the inlet boundary cond. 
 
-1 for no-slip 
-2 for free-slip
-3 for outflow
- 
-TODO 
-change this function to accept flag field.
-impliment spec_boundary_val (char *problem, int imax, int jmax, double **U, double **V), for the inlet boundary cond. 
+//object NO_SLIP BC  make use of flag field for fluid obstacle distinction.  
+if (wl==NO_SLIP)
+{
+	for (int j = 1; j <jmax ; ++j)
+	{
+		V[0][j] = -V[1][j];
+		U[0][j] = 0;
+	}
+}
+else if (wl==FREE_SLIP)
+{
+	for for (int j = 1; j <jmax ; ++j)
+	{
+		V[0][j] = V[1][j];
+		U[0][j] = 0;
+	}
+}
+else if (wl==OUTFLOW))
+{
+	for (int j = 1; j <jmax ; ++j)
+	{
+		V[0][j] = V[1][j];
+		U[0][j] = U[1][j];
+	}
+}
 
- if(wl==1){ }
-else if(wl==2){ }
-else(wl==3){ }
+if (wr==NO_SLIP)
+{
+	for (int j = 1; j <jmax ; ++j)
+	{
+		V[imax+1][j] = -V[imax][j];
+		U[imax][j] = 0;
+	}
+}
+else if (wr==FREE_SLIP)
+{
+	for for (int j = 1; j <jmax ; ++j)
+	{
+		V[imax+1][j] = V[imax][j];
+		U[imax][j] = 0;
+	}
+}
+else if (wr==OUTFLOW))
+{
+	for (int j = 1; j <jmax ; ++j)
+	{
+		V[imax+1][j] = V[imax][j];
+		U[imax][j] = U[imax-1][j];
+	}
+}
 
- if(wr==1){ }
-else if(wr==2){ }
-else(wr==3){ }
+if (wt==NO_SLIP)
+{
+	for (int i = 1; i <imax ; ++i)
+	{
+		U[i][jmax+1] = -U[i][jmax];
+		V[i][jmax] = 0;
+	}
+}
+else if (wt==FREE_SLIP)
+{
+	for for (int i = 1; i <imax ; ++i)
+	{
+		U[i][jmax+1] = U[i][jmax];
+		V[i][jmax] = 0;
+	}
+}
+else if (wt==OUTFLOW))
+{
+	for (int i = 1; i <imax ; ++i)
+	{
+		U[i][jmax+1] = U[i][jmax];
+		V[i][jmax] = V[i][jmax-1];
+	}
+}
 
- if(wt==1){ }
-else if(wt==2){ }
-else(wt==3){ }
-
- if(wb==1){ }
-else if(wb==2){ }
-else(w==3){ }
-
-object NO_SLIP BC  make use of flag field for fluid obstacle distinction.  
-
-
-
-
-*/
-
+if (wb==NO_SLIP)
+{
+	for (int i = 1; i <imax ; ++i)
+	{
+		U[i][0] = -U[i][1];
+		V[i][0] = 0;
+	}
+}
+else if (wb==FREE_SLIP)
+{
+	for for (int i = 1; i <imax ; ++i)
+	{
+		U[i][0] = U[i][1];
+		V[i][0] = 0;
+	}
+}
+else if (wb==OUTFLOW))
+{
+	for (int i = 1; i <imax ; ++i)
+	{
+		U[i][0 = U[i][1];
+		V[i][0] = V[i][1];
+	}
+}
 
 
 
