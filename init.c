@@ -26,7 +26,9 @@ int read_parameters( const char *szFileName,       /* name of the file */
 		    int *wl,
                     int *wr,
                     int *wt,
-   		    int *wb
+   		    int *wb,
+                    char* problem,
+                    int delta_p
    		   )
 {
    READ_DOUBLE( szFileName, *xlength );

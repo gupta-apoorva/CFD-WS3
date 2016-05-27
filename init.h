@@ -63,7 +63,9 @@ int read_parameters(
   int *wl,
   int *wr,
   int *wt,
-  int *wb
+  int *wb,
+  char* problem,
+  int delta_p
 );
 
 /**

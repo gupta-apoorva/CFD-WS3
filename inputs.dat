@@ -54,10 +54,14 @@ VI		0
 #--------------------------------------------
 #       Boundary Conditions
 #--------------------------------------------
-wl	2	
-wr	1	
-wt	2		
-wb	2	
+wl	        2	
+wr	        1	
+wt	        2		
+wb	        2
+
+problemtype     1                        # 1 -- tilted_plate ::: 2 -- plane_shear ::: 3 -- flow_step
+delta_p         0  
+input_vel       3	
 	
 
 

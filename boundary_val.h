@@ -17,7 +17,11 @@ void boundaryvalues(
   double** P,
   double** G, 
   double** F,
-  int **FLAG
+  int **FLAG,
+  const char* problem,
+  int delta_p
 );
+
+void spec_boundary_val (char *problem, int imax, int jmax, double **U, double **V, int delta_p);
 
 #endif

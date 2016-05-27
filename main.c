@@ -80,10 +80,15 @@ int main(int argn, char** args)
    int wr;
    int wt;
    int wb;
+   char* problem;
+   int delta_p;
    
 	
 //setting the parameters
-read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax, &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb);
+read_parameters( "inputs.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax, &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,problem,delta_p);
+
+printf("%c\n",*problem);
+
 
 pgm = read_pgm("mesh2.pgm");
 
@@ -164,12 +169,13 @@ for (int j = 0; j < jmax+2; ++j){
   double t=0;   // initialize the time
   int n = 0;    // number of time steps
 
+
 while (t<t_end)
   {
       calculate_dt(Re,tau,&dt,dx,dy,imax,jmax,U,V);
-      boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG);
-      calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G);
-      calculate_rs(dt,dx,dy, imax,jmax, F, G, RS);
+      boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG,problem,delta_p);
+      calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G,FLAG);
+      calculate_rs(dt,dx,dy, imax,jmax, F, G, RS,FLAG);
       int it = 0;
       double res = 1000;
 
@@ -179,7 +185,7 @@ while (t<t_end)
             it++; 
           }
 
-      calculate_uv(dt,dx, dy,imax,jmax,U,V,F,G,P);
+      calculate_uv(dt,dx, dy,imax,jmax,U,V,F,G,P,FLAG);
       t = t+dt;
       n = n+1;
 //write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
