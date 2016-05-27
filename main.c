@@ -14,7 +14,7 @@
  *
  * - read the program configuration file using read_parameters()
  * - set up the matrices (arrays) needed using the matrix() command
- * - create the initial setup init_uvp(), init_flag(), output_uvp()
+ * - create the initial setup init_uvp(), init_FLAG(), output_uvp()
  * - perform the main loop
  * - trailer: destroy memory allocated and do some statistics
  *
@@ -74,7 +74,7 @@ int main(int argn, char** args)
    double** RS;
    double** F;
    double** G;
-   int** Flag;
+   int** FLAG;
    int** pgm = NULL;
    int wl;	
    int wr;
@@ -97,52 +97,65 @@ pgm = read_pgm("mesh2.pgm");
   RS = matrix ( 0,imax+1,0,jmax+1);
   F = matrix (0,imax+1,0,jmax+1);
   G = matrix (0,imax+1,0,jmax+1);
-  Flag = imatrix (0,imax+1,0,jmax+1);
+  FLAG = imatrix (0,imax+1,0,jmax+1);
 
 // Initializing the arrays U,V,P,RS,F and G
   init_uvp( UI, VI,PI,imax, jmax,U,V,P);
   init_matrix(RS,0,imax+1,0,jmax+1,5);
   init_matrix(F,0,imax+1,0,jmax+1,0);
   init_matrix(G,0,imax+1,0,jmax+1,0);
-  init_imatrix(Flag,0,imax+1,0,jmax+1,1);
+  init_imatrix(FLAG,0,imax+1,0,jmax+1,1);
 
-  for (int i = 0; i < imax+2; ++i){
-  	for (int j = 0; j < jmax+2; ++j){
-  		if (pgm[i][j] == 0){
-  			Flag[i][j] = 0;
+  for (int i = 0; i < imax+2; ++i)
+  {
+  	for (int j = 0; j < jmax+2; ++j)
+    {
+  		if (pgm[i][j] == 0)
+      {
+  			FLAG[i][j] = 0;
   		}
   	}
   }
 
   for (int j = 0; j < jmax+2; ++j){
   	for (int i = 0; i < imax+2; ++i)
-  		printf(" %d",Flag[i][j]);
+  		printf(" %d",FLAG[i][j]);
 		printf("\n");
   		
   	}
 
   	int dummy[imax+4][jmax+4];
 
-  	for (int j = 0; j < jmax+4; ++j){
+  	for (int j = 0; j < jmax+4; ++j)
+    {
   	for (int i = 0; i < imax+4; ++i)
   		dummy[i][j] = 0;
-  		}
+  	}
 
-  	for (int j = 0; j < jmax+2; ++j){
+
+
+  	for (int j = 0; j < jmax+2; ++j)
+    {
   	for (int i = 0; i < imax+2; ++i)
-  		dummy[i+1][j+1] = Flag[i][j];
-  		}
+  		dummy[i+1][j+1] = FLAG[i][j];
+  	}
 
-	for (int i = 0; i < imax+2; ++i){
-		for (int j = 0; j < jmax+2; ++j){
-			Flag[i][j] = 16*dummy[i+1][j+1] + 8*dummy[i+1][j+2] + 4*dummy[i+1][j] + 2*dummy[i][j+1] + dummy[i+2][j+1];
-			
+        for (int j = 0; j < jmax+4; ++j){
+    for (int i = 0; i < imax+4; ++i)
+      printf(" %d",dummy[i][j]);
+    printf("\n");}
+
+	for (int j = 0; j < jmax+2; ++j)
+  {
+		for (int i = 0; i < imax+2; ++i)
+    {
+			FLAG[i][j] = 16*dummy[i+1][j+1] + 8*dummy[i+2][j+1] + 4*dummy[i][j+1] + 2*dummy[i+1][j+2] + dummy[i+1][j]; // big problem here...look at the output...		
 		}
 	}
 
 for (int j = 0; j < jmax+2; ++j){
   	for (int i = 0; i < imax+2; ++i)
-  		printf(" %d",Flag[i][j]);
+  		printf(" %d",FLAG[i][j]);
 		printf("\n");
   		
   	}
@@ -154,7 +167,7 @@ for (int j = 0; j < jmax+2; ++j){
 while (t<t_end)
   {
       calculate_dt(Re,tau,&dt,dx,dy,imax,jmax,U,V);
-      boundaryvalues(imax, jmax, U, V,P, G, F);
+      boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG);
       calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G);
       calculate_rs(dt,dx,dy, imax,jmax, F, G, RS);
       int it = 0;
@@ -180,7 +193,7 @@ free_matrix(P,0,imax+1,0,jmax+1);
 free_matrix(RS,0,imax+1,0,jmax+1);
 free_matrix(F,0,imax+1,0,jmax+1);
 free_matrix(G,0,imax+1,0,jmax+1);
-free_imatrix(Flag,0,imax+1,0,jmax+1);
+free_imatrix(FLAG,0,imax+1,0,jmax+1);
 
 
 

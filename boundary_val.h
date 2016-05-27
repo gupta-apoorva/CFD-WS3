@@ -8,11 +8,16 @@
 void boundaryvalues(
   int imax,
   int jmax,
+  int  wl,
+  int wr,
+  int wt,
+  int wb,
   double **U,
   double **V,
   double** P,
   double** G, 
-  double** F
+  double** F,
+  int **FLAG
 );
 
 #endif
