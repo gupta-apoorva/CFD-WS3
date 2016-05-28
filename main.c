@@ -83,12 +83,13 @@ int main(int argn, char** args)
    int problemtype;
    double delta_p;
    double input_vel;
-   char* problem;
+   int pType;
    
 	
 //setting the parameters
-read_parameters( "inputs.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax,
-                 &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,&problemtype,&delta_p,&input_vel);
+read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax,
+                 &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,&pType,&delta_p,&input_vel);
+printf(" pType =  %d \n", pType);
 
 //if (strcmp(problem,"STEP") == 0)
 printf("%d\n",problemtype );
@@ -176,8 +177,12 @@ for (int j = 0; j < jmax+2; ++j){
 
 while (t<t_end)
   {
+
       calculate_dt(Re,tau,&dt,dx,dy,imax,jmax,U,V);
-      boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG,problem,delta_p);
+
+      boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG);
+
+      spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re);
       calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G,FLAG);
       calculate_rs(dt,dx,dy, imax,jmax, F, G, RS,FLAG);
       int it = 0;
@@ -192,10 +197,10 @@ while (t<t_end)
       calculate_uv(dt,dx, dy,imax,jmax,U,V,F,G,P,FLAG);
       t = t+dt;
       n = n+1;
-//write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
+write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
   }
 
-write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
+//write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
 
 free_matrix(U,0,imax+1,0,jmax+1);
 free_matrix(V,0,imax+1,0,jmax+1);

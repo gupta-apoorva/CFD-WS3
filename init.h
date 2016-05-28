@@ -64,7 +64,7 @@ int read_parameters(
   int *wr,
   int *wt,
   int *wb,
-  int* problemtype,
+  int* pType,
   double *delta_p,
   double *input_vel
 );

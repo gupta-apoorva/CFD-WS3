@@ -27,7 +27,7 @@ int read_parameters( const char *szFileName,       /* name of the file */
                     int *wr,
                     int *wt,
    		    int *wb,
-                    int* problemtype,
+                    int* pType,
                     double *delta_p,
                     double *input_vel
    		   )
@@ -61,6 +61,9 @@ int read_parameters( const char *szFileName,       /* name of the file */
    READ_INT( szFileName, *wt);
    READ_INT( szFileName, *wb);
 
+   READ_INT( szFileName, *pType);
+   READ_DOUBLE( szFileName, *delta_p );
+   READ_DOUBLE( szFileName, *input_vel );
 
    *dx = *xlength / (double)(*imax);
    *dy = *ylength / (double)(*jmax);
