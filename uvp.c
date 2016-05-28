@@ -57,7 +57,7 @@ for (int i=1;i<=imax;i++)
    {
      for (int j=1;j<=jmax;j++)
       {
-        if (FLAG[i][j] >=16 && FLAG[i][j] <=30)
+        if (FLAG[i][j] >=16 && FLAG[i][j] <=31)
          RS[i][j] = 1/dt*((F[i][j] - F[i-1][j])/dx + (G[i][j] - G[i][j-1])/dy);
       }
    }
@@ -72,7 +72,7 @@ for (int i=1;i<=imax-1;i++)
   {
     for (int j =1;j<=jmax;j++)
       {
-        if (FLAG[i][j] >=16 && FLAG[i][j] <=30)
+        if (FLAG[i][j] >=16 && FLAG[i][j] <=31)
         U[i][j] = F[i][j] - dt/dx*(P[i+1][j] - P[i][j]);
       }
    }
@@ -81,7 +81,7 @@ for (int i=1;i<=imax;i++)
   {
     for (int j =1;j<=jmax-1;j++)
       {
-        if (FLAG[i][j] >=16 && FLAG[i][j] <=30)
+        if (FLAG[i][j] >=16 && FLAG[i][j] <=31)
         V[i][j] = G[i][j] - dt/dy*(P[i][j+1] - P[i][j]);
       }
   }
@@ -99,7 +99,7 @@ void calculate_fg(double Re,double GX,double GY,double alpha,double dt,double dx
   {
     for (int j = 1; j <= jmax; ++j)
     {
-      if (FLAG[i][j] >=16 && FLAG[i][j] <=30)
+      if (FLAG[i][j] >=16 && FLAG[i][j] <=31)
       {
         duvdy = 1/(4*dy)*(((V[i][j]+V[i+1][j])*(U[i][j]+U[i][j+1]))-(V[i][j-1]+V[i+1][j-1])*(U[i][j-1]+U[i][j])+alpha*((abs(V[i][j]+V[i+1][j])*(U[i][j]-U[i][j+1]))-abs(V[i][j-1]+V[i+1][j-1])*(U[i][j-1]-U[i][j])));
         du2dx = 1/(4*dx)*(((pow((U[i][j]+U[i+1][j]),2))-(pow((U[i-1][j]+U[i][j]),2)))+alpha*((abs(U[i][j]+U[i+1][j]))*(U[i][j]-U[i+1][j])-(abs(U[i-1][j]+U[i][j]))*(U[i-1][j]-U[i][j])));
@@ -114,7 +114,7 @@ void calculate_fg(double Re,double GX,double GY,double alpha,double dt,double dx
   {
     for (int j =1;j<=jmax-1;j++)
     {
-      if (FLAG[i][j] >=16 && FLAG[i][j] <=30)
+      if (FLAG[i][j] >=16 && FLAG[i][j] <=31)
       {
         d2vdx2 = (V[i+1][j]-2*V[i][j]+V[i-1][j])/(dx*dx);
         d2vdy2 = (V[i][j+1]-2*V[i][j]+V[i][j-1])/(dy*dy);
