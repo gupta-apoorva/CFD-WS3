@@ -80,14 +80,18 @@ int main(int argn, char** args)
    int wr;
    int wt;
    int wb;
+   int problemtype;
+   double delta_p;
+   double input_vel;
    char* problem;
-   int delta_p;
    
 	
 //setting the parameters
-read_parameters( "inputs.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax, &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,problem,delta_p);
+read_parameters( "inputs.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax,
+                 &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,&problemtype,&delta_p,&input_vel);
 
-printf("%c\n",*problem);
+//if (strcmp(problem,"STEP") == 0)
+printf("%d\n",problemtype );
 
 
 pgm = read_pgm("mesh2.pgm");

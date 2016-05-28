@@ -252,6 +252,7 @@ else if (wb==OUTFLOW)
 
 void spec_boundary_val (char *problem, int imax, int jmax, double **U, double **V, int delta_p,int input_vel)
 {
+	int h =1;
 	if (fortiltedplate case)
 	    {
 		    for (int j = 1; j <jmax ; ++j)                           
@@ -265,7 +266,7 @@ void spec_boundary_val (char *problem, int imax, int jmax, double **U, double **
 		{ 
 			for (int j = 1; j <jmax ; ++j)                           
 	            {
-		            V[0][j] = 2*1/2*Re*delta_p/(h/jmax)*(j*h/jmax)*(h - (j*h/jmax)) -V[1][j];
+		            V[0][j] = -2*1/2*Re*delta_p/(h/jmax)*(j*h/jmax)*(h - (j*h/jmax)) -V[1][j];
 		            U[0][j] = 0;
 	            } 
  

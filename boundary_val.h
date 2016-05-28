@@ -22,6 +22,6 @@ void boundaryvalues(
   int delta_p
 );
 
-void spec_boundary_val (char *problem, int imax, int jmax, double **U, double **V, int delta_p);
+void spec_boundary_val (char *problem, int imax, int jmax, double **U, double **V, int delta_p,int input_vel);
 
 #endif
