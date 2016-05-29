@@ -111,7 +111,7 @@ pgm = read_pgm("mesh2.pgm");
 
 // Initializing the arrays U,V,P,RS,F and G
   init_uvp( UI, VI,PI,imax, jmax,U,V,P);
-  init_matrix(RS,0,imax+1,0,jmax+1,5);
+  init_matrix(RS,0,imax+1,0,jmax+1,0);
   init_matrix(F,0,imax+1,0,jmax+1,0);
   init_matrix(G,0,imax+1,0,jmax+1,0);
   init_imatrix(FLAG,0,imax+1,0,jmax+1,1);
@@ -183,6 +183,7 @@ while (t<t_end)
       boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG);
 
       spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re);
+write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
       calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G,FLAG);
       calculate_rs(dt,dx,dy, imax,jmax, F, G, RS,FLAG);
       int it = 0;
@@ -190,14 +191,14 @@ while (t<t_end)
 
       while(it<itermax && res > eps) 
           {
-            sor(omg, dx,dy,imax,jmax, P, RS, &res);
+            sor(omg, dx,dy,imax,jmax, P, RS, &res,FLAG);
             it++; 
           }
 
       calculate_uv(dt,dx, dy,imax,jmax,U,V,F,G,P,FLAG);
       t = t+dt;
       n = n+1;
-write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
+//write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
   }
 
 //write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);

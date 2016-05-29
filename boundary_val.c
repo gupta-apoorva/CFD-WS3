@@ -35,9 +35,9 @@ void boundaryvalues(int imax,int jmax,int wl, int wr, int wt, int wb, double **U
 // Taking care of the left boundary of the domain	
 
 
-if (wl==NO_SLIP)
+/*if (wl==NO_SLIP)
 {
-	for (int j = 1; j <jmax ; ++j)                           
+	for (int j = 1; j <=jmax ; ++j)                           
 	{
 		V[0][j] = -V[1][j];
 		U[0][j] = 0;
@@ -45,7 +45,7 @@ if (wl==NO_SLIP)
 }
 else if (wl==FREE_SLIP)
 {
-	for (int j = 1; j <jmax ; ++j)
+	for (int j = 1; j <=jmax ; ++j)
 	{
 		V[0][j] = V[1][j];
 		U[0][j] = 0;
@@ -53,18 +53,18 @@ else if (wl==FREE_SLIP)
 }
 else if (wl==OUTFLOW)
 {
-	for (int j = 1; j <jmax ; ++j)
+	for (int j = 1; j <=jmax ; ++j)
 	{
 		V[0][j] = V[1][j];
 		U[0][j] = U[1][j];
 	}
-}
+}*/
 
 
 // Taking care of the right boundary of the domain
 if (wr==NO_SLIP)
 {
-	for (int j = 1; j <jmax ; ++j)
+	for (int j = 1; j <=jmax ; ++j)
 	{
 		V[imax+1][j] = -V[imax][j];
 		U[imax][j] = 0;
@@ -72,7 +72,7 @@ if (wr==NO_SLIP)
 }
 else if (wr==FREE_SLIP)
 {
-	for (int j = 1; j <jmax ; ++j)
+	for (int j = 1; j <=jmax ; ++j)
 	{
 		V[imax+1][j] = V[imax][j];
 		U[imax][j] = 0;
@@ -80,7 +80,7 @@ else if (wr==FREE_SLIP)
 }
 else if (wr==OUTFLOW)
 {
-	for (int j = 1; j <jmax ; ++j)
+	for (int j = 1; j <=jmax ; ++j)
 	{
 		V[imax+1][j] = V[imax][j];
 		U[imax][j] = U[imax-1][j];
@@ -91,7 +91,7 @@ else if (wr==OUTFLOW)
 // Taking care of the top boundary of the domain
 if (wt==NO_SLIP)
 {
-	for (int i = 1; i <imax ; ++i)
+	for (int i = 1; i <=imax ; ++i)
 	{
 		U[i][jmax+1] = -U[i][jmax];
 		V[i][jmax] = 0;
@@ -99,7 +99,7 @@ if (wt==NO_SLIP)
 }
 else if (wt==FREE_SLIP)
 {
-	for (int i = 1; i <imax ; ++i)
+	for (int i = 1; i <=imax ; ++i)
 	{
 		U[i][jmax+1] = U[i][jmax];
 		V[i][jmax] = 0;
@@ -107,7 +107,7 @@ else if (wt==FREE_SLIP)
 }
 else if (wt==OUTFLOW)
 {
-	for (int i = 1; i <imax ; ++i)
+	for (int i = 1; i <=imax ; ++i)
 	{
 		U[i][jmax+1] = U[i][jmax];
 		V[i][jmax] = V[i][jmax-1];
@@ -118,7 +118,7 @@ else if (wt==OUTFLOW)
 // Taking care of the bottom boundary of the domain
 if (wb==NO_SLIP)
 {
-	for (int i = 1; i <imax ; ++i)
+	for (int i = 1; i <=imax ; ++i)
 	{
 		U[i][0] = -U[i][1];
 		V[i][0] = 0;
@@ -126,7 +126,7 @@ if (wb==NO_SLIP)
 }
 else if (wb==FREE_SLIP)
 {
-	for (int i = 1; i <imax ; ++i)
+	for (int i = 1; i <=imax ; ++i)
 	{
 		U[i][0] = U[i][1];
 		V[i][0] = 0;
@@ -134,7 +134,7 @@ else if (wb==FREE_SLIP)
 }
 else if (wb==OUTFLOW)
 {
-	for (int i = 1; i <imax ; ++i)
+	for (int i = 1; i <=imax ; ++i)
 	{
 		U[i][0] = U[i][1];
 		V[i][0] = V[i][1];
@@ -257,16 +257,16 @@ void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, i
 	int h =1;
 	if (pType == TILTED_PLATE)
 	    {
-		    for (int j = 1; j <jmax ; ++j)                           
+		    for (int j = 1; j <=jmax ; ++j)                           
 	            {
-		            V[0][j] = 2*input_vel-V[1][j];
-		            U[0][j] = 0;
+		            U[0][j] = 2*input_vel-U[1][j];
+		            V[0][j] = 0;
 	            }
 	    }
 
 	else if (pType == PLANE_SHEAR)
 		{ 
-			for (int j = 1; j <jmax ; ++j)                           
+			for (int j = 1; j <=jmax ; ++j)                           
 	            {
 		            V[0][j] = -2*1/2*Re*delta_p/(h/jmax)*(j*h/jmax)*(h - (j*h/jmax)) -V[1][j];
 		            U[0][j] = 0;
@@ -275,7 +275,7 @@ void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, i
 		}
 	else if (pType == FLOW_STEP)
 	   {
-	   	    for (int j = 1; j <jmax ; ++j)                           
+	   	    for (int j = 1; j <=jmax ; ++j)                           
 	            {
 		            V[0][j] = 2*input_vel-V[1][j];
 		            U[0][j] = 0;

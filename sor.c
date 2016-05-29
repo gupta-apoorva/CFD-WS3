@@ -9,7 +9,8 @@ void sor(
   int    jmax,
   double **P,
   double **RS,
-  double *res
+  double *res,
+  int** FLAG
 ) {
   int i,j;
   double rloc;
@@ -18,6 +19,7 @@ void sor(
   /* SOR iteration */
   for(i = 1; i <= imax; i++) {
     for(j = 1; j<=jmax; j++) {
+      if (FLAG[i][j] >=16 && FLAG[i][j] <=31)
       P[i][j] = (1.0-omg)*P[i][j]
               + coeff*(( P[i+1][j]+P[i-1][j])/(dx*dx) + ( P[i][j+1]+P[i][j-1])/(dy*dy) - RS[i][j]);
     }
@@ -27,6 +29,7 @@ void sor(
   rloc = 0;
   for(i = 1; i <= imax; i++) {
     for(j = 1; j <= jmax; j++) {
+      if (FLAG[i][j] >=16 && FLAG[i][j] <=31)
       rloc += ( (P[i+1][j]-2.0*P[i][j]+P[i-1][j])/(dx*dx) + ( P[i][j+1]-2.0*P[i][j]+P[i][j-1])/(dy*dy) - RS[i][j])*
               ( (P[i+1][j]-2.0*P[i][j]+P[i-1][j])/(dx*dx) + ( P[i][j+1]-2.0*P[i][j]+P[i][j-1])/(dy*dy) - RS[i][j]);
     }
