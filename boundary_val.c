@@ -7,8 +7,8 @@
 #define OUTFLOW 3
 
 
-#define B_N 1          
-#define B_S 2             // Defining the values to find boundary directions. 
+#define B_N 2          
+#define B_S 1             // Defining the values to find boundary directions. 
 #define B_W 4
 #define B_E 8
 #define B_NE 9
@@ -168,7 +168,7 @@ else if (wb==OUTFLOW)
 		//printf(" boundaryvalues %d  %d \n", i, j);
 			if (FLAG[i][j] >=1 && FLAG[i][j] <=15)
 			{
-				if (FLAG[i][j] & B_E ==0)
+				if (FLAG[i][j] == B_E)
 				{
 					U[i][j] = 0;
 					V[i][i-1] = -V[i+1][j-1];
@@ -177,7 +177,7 @@ else if (wb==OUTFLOW)
 					P[i][j] = P[i+1][j];
 
 				}
-				else if (FLAG[i][j] & B_W ==0)
+				else if (FLAG[i][j] == B_W)
 				{
 					U[i-1][j] = 0;
 					V[i][j-1] = -V[i-1][j-1];
@@ -186,7 +186,7 @@ else if (wb==OUTFLOW)
 					P[i][j] = P[i-1][j];
 
 				}
-				else if (FLAG[i][j] & B_S ==0)
+				else if (FLAG[i][j]  == B_S)
 				{
 					V[i][j-1] = 0;
 					U[i][j] = -U[i][j-1];
@@ -194,7 +194,7 @@ else if (wb==OUTFLOW)
 					G[i][j-1] = V[i][j-1];
 					P[i][j] = P[i][j-1]; 
 				}
-				else if (FLAG[i][j] & B_N ==0)
+				else if (FLAG[i][j]  == B_N)
 				{
 					V[i][j] =0;
 					U[i-1][j] = -U[i-1][j+1];
@@ -203,7 +203,7 @@ else if (wb==OUTFLOW)
 					P[i][j] = P[i][j+1];
 					
 				}
-				else if (FLAG[i][j] & B_NE ==0)
+				else if (FLAG[i][j] == B_NE)
 				{
 					U[i][j] = 0;
 					V[i][j] = 0;
@@ -213,7 +213,7 @@ else if (wb==OUTFLOW)
 					G[i][j] = V[i][j];
 					P[i][j] = (P[i][j+1]+P[i+1][j])/2;
 				}
-				else if (FLAG[i][j] & B_NW ==0)
+				else if (FLAG[i][j] == B_NW)
 				{
 					U[i-1][j] = 0;
 					V[i][j] = 0;
@@ -223,7 +223,7 @@ else if (wb==OUTFLOW)
                     F[i-1][j] = U[i-1][j];
                     G[i][j] = V[i][j];
 				}
-				else if (FLAG[i][j] & B_SE ==0)
+				else if (FLAG[i][j] == B_SE)
 				{
 					U[i][j] = 0;
 					V[i][j-1] = 0;
@@ -233,7 +233,7 @@ else if (wb==OUTFLOW)
 					F[i][j] = U[i][j];
 					G[i][j-1] = V[i][j-1];
 				}
-				else if (FLAG[i][j] & B_SW ==0)
+				else if (FLAG[i][j] == B_SW)
 				{
 					U[i-1][j] = 0;
 					V[i][j-1] = 0;
