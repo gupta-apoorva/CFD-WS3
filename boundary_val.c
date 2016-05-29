@@ -190,7 +190,7 @@ else if (wb==OUTFLOW)
 				{
 					V[i][j-1] = 0;
 					U[i][j] = -U[i][j-1];
-					U[i-1][j] = U[i-1][j-1];
+					U[i-1][j] = -U[i-1][j-1];
 					G[i][j-1] = V[i][j-1];
 					P[i][j] = P[i][j-1]; 
 				}
