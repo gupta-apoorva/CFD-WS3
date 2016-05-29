@@ -254,13 +254,13 @@ else if (wb==OUTFLOW)
 void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, int delta_p,int input_vel, double Re)
 
 {
-	int h =1;
+	int h =2;
 	if (pType == TILTED_PLATE)
 	    {
 		    for (int j = 1; j <=jmax ; ++j)                           
 	            {
 		            U[0][j] = 2*input_vel-U[1][j];
-		            V[0][j] = 0;
+		            V[0][j] = -V[1][j];
 	            }
 	    }
 
@@ -268,8 +268,8 @@ void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, i
 		{ 
 			for (int j = 1; j <=jmax ; ++j)                           
 	            {
-		            V[0][j] = -2*1/2*Re*delta_p/(h/jmax)*(j*h/jmax)*(h - (j*h/jmax)) -V[1][j];
-		            U[0][j] = 0;
+		            U[0][j] = -Re*delta_p/(h/jmax)*(j*h/(jmax))*(h - (j*h/(jmax))) -U[1][j];
+		            V[0][j] = -V[1][j];
 	            } 
  
 		}
@@ -277,8 +277,8 @@ void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, i
 	   {
 	   	    for (int j = 1; j <=jmax ; ++j)                           
 	            {
-		            V[0][j] = 2*input_vel-V[1][j];
-		            U[0][j] = 0;
+		            U[0][j] = 2*input_vel-U[1][j];
+		            V[0][j] = -V[1][j];
 	            } 
 
 	   }

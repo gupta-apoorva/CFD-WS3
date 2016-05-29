@@ -201,6 +201,11 @@ write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
 //write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
   }
 
+ for (int j = 1; j < jmax+1; ++j){
+  	for (int i = 1; i < imax+1; ++i)
+  		printf(" %f\n",P[i][j]);
+  		
+  	}
 //write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
 
 free_matrix(U,0,imax+1,0,jmax+1);
