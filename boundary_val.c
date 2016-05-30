@@ -18,20 +18,13 @@
 #define B_SW 6
 
 
-#define TILTED_PLATE 1
+#define TILTED_PLATE 1    // Defining different problem types
 #define PLANE_SHEAR 2
 #define FLOW_STEP 3
 
 
 void boundaryvalues(int imax,int jmax,int wl, int wr, int wt, int wb, double **U,double **V, double** P, double** G, double** F, int** FLAG)
 {
-// wl wr wt wb ..... object wall NO_SLIP.
-//TODO 
-//change this function to accept flag field.
-//impliment spec_boundary_val (char *problem, int imax, int jmax, double **U, double **V), for the inlet boundary cond. 
-
-//object NO_SLIP BC  make use of flag field for fluid obstacle distinction.  
-
 
 // Taking care of the left boundary of the domain	
 
@@ -63,100 +56,82 @@ else if (wl==OUTFLOW)
 
 
 // Taking care of the right boundary of the domain
-if (wr==NO_SLIP)
-{
-	for (int j = 1; j <=jmax ; ++j)
-	{
-		V[imax+1][j] = -V[imax][j];
-		U[imax][j] = 0;
+	if (wr==NO_SLIP){
+		for (int j = 1; j <=jmax ; ++j){
+			V[imax+1][j] = -V[imax][j];
+			U[imax][j] = 0;
+		}
 	}
-}
-else if (wr==FREE_SLIP)
-{
-	for (int j = 1; j <=jmax ; ++j)
-	{
-		V[imax+1][j] = V[imax][j];
-		U[imax][j] = 0;
+	else if (wr==FREE_SLIP){
+		for (int j = 1; j <=jmax ; ++j){
+			V[imax+1][j] = V[imax][j];
+			U[imax][j] = 0;
+		}
 	}
-}
-else if (wr==OUTFLOW)
-{
-	for (int j = 1; j <=jmax ; ++j)
-	{
-		V[imax+1][j] = V[imax][j];
-		U[imax][j] = U[imax-1][j];
+	else if (wr==OUTFLOW){
+		for (int j = 1; j <=jmax ; ++j){
+			V[imax+1][j] = V[imax][j];
+			U[imax][j] = U[imax-1][j];
+		}
 	}
-}
 
 
 // Taking care of the top boundary of the domain
-if (wt==NO_SLIP)
-{
-	for (int i = 1; i <=imax ; ++i)
-	{
-		U[i][jmax+1] = -U[i][jmax];
-		V[i][jmax] = 0;
+	if (wt==NO_SLIP){
+		for (int i = 1; i <=imax ; ++i){
+			U[i][jmax+1] = -U[i][jmax];
+			V[i][jmax] = 0;
+		}
 	}
-}
-else if (wt==FREE_SLIP)
-{
-	for (int i = 1; i <=imax ; ++i)
-	{
-		U[i][jmax+1] = U[i][jmax];
-		V[i][jmax] = 0;
+	else if (wt==FREE_SLIP){
+		for (int i = 1; i <=imax ; ++i)	{
+			U[i][jmax+1] = U[i][jmax];
+			V[i][jmax] = 0;
+		}
 	}
-}
-else if (wt==OUTFLOW)
-{
-	for (int i = 1; i <=imax ; ++i)
-	{
-		U[i][jmax+1] = U[i][jmax];
-		V[i][jmax] = V[i][jmax-1];
+	else if (wt==OUTFLOW){
+		for (int i = 1; i <=imax ; ++i){
+			U[i][jmax+1] = U[i][jmax];
+			V[i][jmax] = V[i][jmax-1];
+		}
 	}
-}
 
 
 // Taking care of the bottom boundary of the domain
-if (wb==NO_SLIP)
-{
-	for (int i = 1; i <=imax ; ++i)
-	{
-		U[i][0] = -U[i][1];
-		V[i][0] = 0;
-	}
-}
-else if (wb==FREE_SLIP)
-{
-	for (int i = 1; i <=imax ; ++i)
-	{
-		U[i][0] = U[i][1];
-		V[i][0] = 0;
-	}
-}
-else if (wb==OUTFLOW)
-{
-	for (int i = 1; i <=imax ; ++i)
-	{
-		U[i][0] = U[i][1];
-		V[i][0] = V[i][1];
-	}
-}
+	if (wb==NO_SLIP){
+		for (int i = 1; i <=imax ; ++i){
+			U[i][0] = -U[i][1];
+			V[i][0] = 0;
+	        }
+        }
+
+	else if (wb==FREE_SLIP){
+		for (int i = 1; i <=imax ; ++i)	{
+			U[i][0] = U[i][1];
+			V[i][0] = 0;
+	         }
+        }
+
+	else if (wb==OUTFLOW){
+		for (int i = 1; i <=imax ; ++i){
+			U[i][0] = U[i][1];
+			V[i][0] = V[i][1];
+	         }
+       }
 
 // Since the pressure P , F and G dosen't depend on the type of boundary so taking care of them together....
-	for(int i=1; i<=imax; i++)
-	{
-        P[i][0] = P[i][1];
+	for(int i=1; i<=imax; i++){
+        	P[i][0] = P[i][1];
 		P[i][jmax+1] = P[i][jmax];
-        G[i][0] = V[i][0];
-        G[i][jmax] = V[i][jmax]; 
-    }
+        	G[i][0] = V[i][0];
+        	G[i][jmax] = V[i][jmax]; 
+    	}
     
-	for(int j=1; j<=jmax; j++)
-	{
-        P[0][j] = P[1][j];
+	for(int j=1; j<=jmax; j++){
+        	P[0][j] = P[1][j];
 		P[imax+1][j] = P[imax][j];
-        F[0][j] = U[0][j];
-        F[imax][j] = U[imax][j];
+        	F[0][j] = U[0][j];
+        	F[imax][j] = U[imax][j];
 	}
 
 
@@ -166,7 +141,6 @@ else if (wb==OUTFLOW)
 		
 		for (int j = 1; j <=jmax; ++j)
 		{
-		//printf(" boundaryvalues %d  %d \n", i, j);
 			if (FLAG[i][j] >=1 && FLAG[i][j] <=15)
 			{
 				if (FLAG[i][j] == B_E)
@@ -220,9 +194,9 @@ else if (wb==OUTFLOW)
 					V[i][j] = 0;
 					U[i][j] = -U[i][j+1];
 					V[i][j-1]= -V[i-1][j-1];
-                    P[i][j] = (P[i][j+1] + P[i-1][j])/2;
-                    F[i-1][j] = U[i-1][j];
-                    G[i][j] = V[i][j];
+                    			P[i][j] = (P[i][j+1] + P[i-1][j])/2;
+                    			F[i-1][j] = U[i-1][j];
+                   		        G[i][j] = V[i][j];
 				}
 				else if (FLAG[i][j] == B_SE)
 				{
@@ -251,41 +225,29 @@ else if (wb==OUTFLOW)
 
 }
 
+//Setting the values for the inflow conditions for our 3 cases..
 
-void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, int delta_p,int input_vel, double Re, double h, double w)
+void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, int delta_p,int input_vel, double Re, double h, double w){
 
-{
-
-	if (pType == TILTED_PLATE)
-	    {
-		    for (int j = 1; j <=jmax ; ++j)                           
-	            {
+	if (pType == TILTED_PLATE){
+		    for (int j = 1; j <=jmax ; ++j){
 		            U[0][j] = input_vel;
 		            V[0][j] = -V[1][j];
 	            }
 	    }
 
-	else if (pType == PLANE_SHEAR)
-		{ 
+	else if (pType == PLANE_SHEAR){ 
 				
-			for (int j = 1; j <=jmax ; ++j)                           
-	            {
-
+		   for (int j = 1; j <=jmax ; ++j){
 		            U[0][j] = -1.0/2.0*Re*delta_p/w*j*h/(jmax+1)*(j*h/(jmax+1)-h); 
 		            V[0][j] = -V[1][j];
 	            } 
- 
-		}
-	else if (pType == FLOW_STEP)
-	   {
-
-
-	   	    for (int j = 1; j <=jmax ; ++j)                           
-	            {
+	    }
+	else if (pType == FLOW_STEP){
+	   	    for (int j = 1; j <=jmax ; ++j){
 		            U[0][j] = 2*input_vel-U[1][j];
 		            V[0][j] = -V[1][j];
 	            } 
-
 	   }
 
 	   else{

@@ -42,8 +42,11 @@
  * - calculate_uv() Calculate the velocity at the next time step.
  */
 
-
-
+#define TILTED_PLATE 1    // Defining different problem types
+#define PLANE_SHEAR 2
+#define FLOW_STEP 3
+#define C_F 1
+#define C_B 0
 
 int main(int argn, char** args)
 {
@@ -88,137 +91,131 @@ int main(int argn, char** args)
    
 	
 //setting the parameters
-read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax,
-                 &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,&pType,&delta_p,&input_vel);
+	read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax,
+		         &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,&pType,&delta_p,&input_vel);
 
-printf(" pType =  %d \n", pType);
+	printf(" Problem Type Selected  =  %d \n", pType);
 
-if (pType == 1)
-{
-  pgm = read_pgm("mesh1.pgm");
-}
-else if (pType == 2)
-{
-  pgm = read_pgm("mesh2.pgm");
+// Reading the correct pgm file based of our input...
+	if (pType == TILTED_PLATE){
+          printf(" Problem Type Selected  =  TILTED_PLATE\n");
+	  pgm = read_pgm("mesh1.pgm");
+	}
+	else if (pType == PLANE_SHEAR){
+          printf(" Problem Type Selected  =  PLANE_SHEAR\n");
+	  pgm = read_pgm("mesh2.pgm");
+	}
+	else if (pType == FLOW_STEP){
+          printf(" Problem Type Selected  =  FLOW_OVER_STEP\n");
+	  pgm = read_pgm("mesh3.pgm");
 
-}
-else if (pType == 3)
-{
-  pgm = read_pgm("mesh3.pgm");
-
-}
-else{printf("No pgm file found\n");}
+	}
+	else{printf("No pgm file found\n");}
 
 
 // Creating the arrays U,V and P
-  U = matrix ( 0 , imax+1 , 0 , jmax+1 );
-  V = matrix ( 0 , imax+1 , 0 , jmax+1 );
-  P = matrix ( 0 , imax+1 , 0 , jmax+1 );
+	  U = matrix ( 0 , imax+1 , 0 , jmax+1 );
+	  V = matrix ( 0 , imax+1 , 0 , jmax+1 );
+	  P = matrix ( 0 , imax+1 , 0 , jmax+1 );
         
 
 // Creating arrays for right side of pressure poissons equation (RS) and F and G
-  RS = matrix ( 0,imax+1,0,jmax+1);
-  F = matrix (0,imax+1,0,jmax+1);
-  G = matrix (0,imax+1,0,jmax+1);
-  FLAG = imatrix (0,imax+1,0,jmax+1);
+	  RS = matrix ( 0,imax+1,0,jmax+1);
+	  F = matrix (0,imax+1,0,jmax+1);
+	  G = matrix (0,imax+1,0,jmax+1);
+	  FLAG = imatrix (0,imax+1,0,jmax+1);
 
-// Initializing the arrays U,V,P,RS,F and G
-  init_uvp( UI, VI,PI,imax, jmax,U,V,P);
-  init_matrix(RS,0,imax+1,0,jmax+1,0);
-  init_matrix(F,0,imax+1,0,jmax+1,0);
-  init_matrix(G,0,imax+1,0,jmax+1,0);
-  init_imatrix(FLAG,0,imax+1,0,jmax+1,1);
+// Initializing the arrays U,V,P,RS,F, G and FLAG field
+	  init_uvp( UI, VI,PI,imax, jmax,U,V,P);
+	  init_matrix(RS,0,imax+1,0,jmax+1,0);
+	  init_matrix(F,0,imax+1,0,jmax+1,0);
+  	  init_matrix(G,0,imax+1,0,jmax+1,0);
+  	  init_imatrix(FLAG,0,imax+1,0,jmax+1,C_F);
 
-  for (int i = 0; i < imax+2; ++i)
-  {
-  	for (int j = 0; j < jmax+2; ++j)
-    {
-  		if (pgm[i][j] == 0)
-      {
-  			FLAG[i][j] = 0;
-  		}
-  	}
-  }
+// Setting the value to be C_b by checking whether it is a fluid or boundary...
+	  for (int i = 0; i < imax+2; ++i){
+	  for (int j = 0; j < jmax+2; ++j){
+	   	if (pgm[i][j] == 0)  
+  		FLAG[i][j] = C_B;	
+  	  }
+  	  }
 
-  /*for (int j = 0; j < jmax+2; ++j){
-  	for (int i = 0; i < imax+2; ++i)
-  		printf(" %d",FLAG[i][j]);
-		printf("\n");	
-  	}*/
+// Making a dummy matrix as it will be required later to set the flag field...
 
   	int dummy[imax+4][jmax+4];
 
-  	for (int j = 0; j < jmax+4; ++j)
-    {
+  	for (int j = 0; j < jmax+4; ++j){
   	for (int i = 0; i < imax+4; ++i)
-  		dummy[i][j] = 0;
-  	}
+        dummy[i][j] = 0;
+        }
 
-
-
-  	for (int j = 0; j < jmax+2; ++j)
-    {
+  	for (int j = 0; j < jmax+2; ++j){
   	for (int i = 0; i < imax+2; ++i)
-  		dummy[i+1][j+1] = FLAG[i][j];
-  	}
+        dummy[i+1][j+1] = FLAG[i][j];
+        }
+ 
+// Setting the proper values for our flagfield based on the boundary..
 
-        /*for (int j = 0; j < jmax+4; ++j){
-    for (int i = 0; i < imax+4; ++i)
-      printf(" %d",dummy[i][j]);
-    printf("\n");}*/
-
-	for (int j = 0; j < jmax+2; ++j)
-  {
-		for (int i = 0; i < imax+2; ++i)
-    {
-			FLAG[i][j] = 16*dummy[i+1][j+1] + 8*dummy[i+2][j+1] + 4*dummy[i][j+1] + 2*dummy[i+1][j] + dummy[i+1][j+2]; 		
-		}
+	for (int j = 0; j < jmax+2; ++j){                
+	for (int i = 0; i < imax+2; ++i)
+        FLAG[i][j] = 16*dummy[i+1][j+1] + 8*dummy[i+2][j+1] + 4*dummy[i][j+1] + 2*dummy[i+1][j] + dummy[i+1][j+2]; 				
 	}
 
-for (int j = 0; j < jmax+2; ++j){
-  	for (int i = 0; i < imax+2; ++i)
-  		printf(" %d",FLAG[i][j]);
-		printf("\n");
-  		
-  	}
 
-
-  double t=0;   // initialize the time
-  int n = 0;    // number of time steps
+        double t=0;   // initialize the time
+  	int n = 0;    // number of time steps
 
 
 while (t<t_end)
   {
 
-      calculate_dt(Re,tau,&dt,dx,dy,imax,jmax,U,V);
+// Calculating the proper time step to maintain stability...
+
+      calculate_dt(Re,tau,&dt,dx,dy,imax,jmax,U,V);    
+
+// Setting the boundary values for U,V,P depending on the flagfield...
 
       boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG);
 
-      spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re, ylength, xlength);
-     // write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P,FLAG);
-      calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G,FLAG);
-      calculate_rs(dt,dx,dy, imax,jmax, F, G, RS,FLAG);
-      int it = 0;
-      double res = 1000;
+// Setting the special boundary values based on the problem type...
 
+      spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re, ylength, xlength);
+
+// Calculating the F and G matrix for only the fluid cells based on the flagfield...
+
+      calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G,FLAG);
+
+// calculating the right hand side of the pressure poissons for only fluid cells based on the flagfield...
+
+      calculate_rs(dt,dx,dy, imax,jmax, F, G, RS,FLAG);
+
+// iteration number...
+
+      int it = 0;
+
+// residual... 
+  
+      double res = 1000;  
+
+// Doing the successive over relaxation...
       while(it<itermax && res > eps) 
           {
             sor(omg, dx,dy,imax,jmax, P, RS, &res,FLAG);
             it++; 
           }
 
+// calculating the U and V velocities matrices...
+
       calculate_uv(dt,dx, dy,imax,jmax,U,V,F,G,P,FLAG);
+
+//Going to the next time step...
+
       t = t+dt;
       n = n+1;  
+
+//Writing the VTK file...
       write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P,FLAG);
   }
-
- for (int j = 1; j < jmax+1; ++j){
-  	//for (int i = 1; i < imax+1; ++i)
-  		printf(" %f\n",U[0][j]);
-  		
-  	}
-//write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
 
 free_matrix(U,0,imax+1,0,jmax+1);
 free_matrix(V,0,imax+1,0,jmax+1);
@@ -227,8 +224,7 @@ free_matrix(RS,0,imax+1,0,jmax+1);
 free_matrix(F,0,imax+1,0,jmax+1);
 free_matrix(G,0,imax+1,0,jmax+1);
 free_imatrix(FLAG,0,imax+1,0,jmax+1);
+free_imatrix(pgm,0,imax,0,jmax);
 
-
-
-  return 0;
+return 0;
 }
