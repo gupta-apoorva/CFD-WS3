@@ -10,8 +10,9 @@ void sor(
   double **P,
   double **RS,
   double *res,
-  int** FLAG
-) {
+  int** FLAG)
+
+ {
   int i,j;
   double rloc;
   double coeff = omg/(2.0*(1.0/(dx*dx)+1.0/(dy*dy)));
