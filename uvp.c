@@ -14,8 +14,8 @@ void calculate_dt(
   int imax,
   int jmax,
   double **U,
-  double **V
-)
+  double **V)
+
 {
 if (tau>0)
   {

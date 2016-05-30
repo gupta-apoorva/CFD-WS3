@@ -159,7 +159,7 @@ pgm = read_pgm("mesh2.pgm");
   {
 		for (int i = 0; i < imax+2; ++i)
     {
-			FLAG[i][j] = 16*dummy[i+1][j+1] + 8*dummy[i+2][j+1] + 4*dummy[i][j+1] + 2*dummy[i+1][j+2] + dummy[i+1][j]; // big problem here...look at the output...		
+			FLAG[i][j] = 16*dummy[i+1][j+1] + 8*dummy[i+2][j+1] + 4*dummy[i][j+1] + 2*dummy[i+1][j+1] + dummy[i+1][j]; 		
 		}
 	}
 
@@ -183,7 +183,7 @@ while (t<t_end)
       boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG);
 
       spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re);
-write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);
+      write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P,FLAG);
       calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G,FLAG);
       calculate_rs(dt,dx,dy, imax,jmax, F, G, RS,FLAG);
       int it = 0;

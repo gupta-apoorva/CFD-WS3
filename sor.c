@@ -36,18 +36,17 @@ void sor(
   }
   rloc = rloc/(imax*jmax);
   rloc = sqrt(rloc);
-  /* set residual */
-  *res = rloc;
+  *res = rloc;            // set residual 
 
 
   /* set boundary values */
-  for(i = 1; i <= imax; i++) {
+  /*for(i = 1; i <= imax; i++) {
     P[i][0] = P[i][1];
     P[i][jmax+1] = P[i][jmax];
   }
   for(j = 1; j <= jmax; j++) {
     P[0][j] = P[1][j];
     P[imax+1][j] = P[imax][j];
-  }
+  }*/
 }
 
