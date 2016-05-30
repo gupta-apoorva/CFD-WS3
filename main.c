@@ -84,6 +84,7 @@ int main(int argn, char** args)
    double delta_p;
    double input_vel;
    int pType;
+
    
 	
 //setting the parameters
@@ -92,7 +93,22 @@ read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength
 
 printf(" pType =  %d \n", pType);
 
-pgm = read_pgm("mesh2.pgm");
+if (pType == 1)
+{
+  pgm = read_pgm("mesh1.pgm");
+}
+else if (pType == 2)
+{
+  pgm = read_pgm("mesh2.pgm");
+
+}
+else if (pType == 3)
+{
+  pgm = read_pgm("mesh3.pgm");
+
+}
+else{printf("No pgm file found\n");}
+
 
 // Creating the arrays U,V and P
   U = matrix ( 0 , imax+1 , 0 , jmax+1 );
@@ -178,7 +194,7 @@ while (t<t_end)
 
       boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG);
 
-      spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re);
+      spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re, ylength, xlength);
      // write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P,FLAG);
       calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G,FLAG);
       calculate_rs(dt,dx,dy, imax,jmax, F, G, RS,FLAG);
@@ -198,8 +214,8 @@ while (t<t_end)
   }
 
  for (int j = 1; j < jmax+1; ++j){
-  	for (int i = 1; i < imax+1; ++i)
-  		printf(" %f\n",P[i][j]);
+  	//for (int i = 1; i < imax+1; ++i)
+  		printf(" %f\n",U[0][j]);
   		
   	}
 //write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P);

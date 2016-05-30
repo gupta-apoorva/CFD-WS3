@@ -21,6 +21,6 @@ void boundaryvalues(
  
 );
 
-void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, int delta_p,int input_vel, double Re);
+void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, int delta_p,int input_vel, double Re, double h, double w);
 
 #endif

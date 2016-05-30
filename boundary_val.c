@@ -1,6 +1,7 @@
 #include "boundary_val.h"
 #include <string.h>
 #include <stdio.h>
+#include "math.h"
 
 #define NO_SLIP 1         // defining the different kinds of boundary  conditions
 #define FREE_SLIP 2
@@ -219,9 +220,9 @@ else if (wb==OUTFLOW)
 					V[i][j] = 0;
 					U[i][j] = -U[i][j+1];
 					V[i][j-1]= -V[i-1][j-1];
-                                        P[i][j] = (P[i][j+1] + P[i-1][j])/2;
-                                        F[i-1][j] = U[i-1][j];
-                                        G[i][j] = V[i][j];
+                    P[i][j] = (P[i][j+1] + P[i-1][j])/2;
+                    F[i-1][j] = U[i-1][j];
+                    G[i][j] = V[i][j];
 				}
 				else if (FLAG[i][j] == B_SE)
 				{
@@ -251,30 +252,34 @@ else if (wb==OUTFLOW)
 }
 
 
-void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, int delta_p,int input_vel, double Re)
+void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, int delta_p,int input_vel, double Re, double h, double w)
 
 {
-	int h =2;
+
 	if (pType == TILTED_PLATE)
 	    {
 		    for (int j = 1; j <=jmax ; ++j)                           
 	            {
-		            U[0][j] = 2*input_vel-U[1][j];
+		            U[0][j] = input_vel;
 		            V[0][j] = -V[1][j];
 	            }
 	    }
 
 	else if (pType == PLANE_SHEAR)
 		{ 
+				
 			for (int j = 1; j <=jmax ; ++j)                           
 	            {
-		            U[0][j] = -2/2*Re*delta_p/(jmax+1)*h*j/(jmax+1)*(j*h/(jmax+1)-h); //-U[1][j];
+
+		            U[0][j] = -1.0/2.0*Re*delta_p/w*j*h/(jmax+1)*(j*h/(jmax+1)-h); 
 		            V[0][j] = -V[1][j];
 	            } 
  
 		}
 	else if (pType == FLOW_STEP)
 	   {
+
+
 	   	    for (int j = 1; j <=jmax ; ++j)                           
 	            {
 		            U[0][j] = 2*input_vel-U[1][j];
