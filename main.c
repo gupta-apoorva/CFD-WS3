@@ -94,8 +94,6 @@ int main(int argn, char** args)
 	read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax,
 		         &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,&pType,&delta_p,&input_vel);
 
-	printf(" Problem Type Selected  =  %d \n", pType);
-
 // Reading the correct pgm file based of our input...
 	if (pType == TILTED_PLATE){
           printf(" Problem Type Selected  =  TILTED_PLATE\n");

@@ -33,7 +33,6 @@ for (int i = 1; i <=imax; ++i)
     
     for (int j = 1; j <=jmax; ++j)
     {
-    //printf(" boundaryvalues %d  %d \n", i, j);
       if (FLAG[i][j] >=1 && FLAG[i][j] <=15)
       {
         if (FLAG[i][j] == B_E)

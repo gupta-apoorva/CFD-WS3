@@ -245,7 +245,7 @@ void spec_boundary_val (int pType, int imax, int jmax, double **U, double **V, i
 	    }
 	else if (pType == FLOW_STEP){
 	   	    for (int j = 1; j <=jmax ; ++j){
-		            U[0][j] = 2*input_vel-U[1][j];
+		            U[0][j] = input_vel;
 		            V[0][j] = -V[1][j];
 	            } 
 	   }
