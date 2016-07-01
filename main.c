@@ -83,7 +83,6 @@ int main(int argn, char** args)
    int wr;
    int wt;
    int wb;
-   int problemtype;
    double delta_p;
    double input_vel;
    int pType;

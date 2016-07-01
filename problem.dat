@@ -33,7 +33,7 @@ alpha		0.9
 #--------------------------------------------
 #               reynoldsnumber
 #--------------------------------------------
-Re		10000
+Re		10
 
 #--------------------------------------------
 #               gravitation
@@ -59,7 +59,7 @@ wr	        3
 wt	        1		
 wb	        1
 
-pType           1                    # 1 -- tilted_plate ::: 2 -- plane_shear ::: 3 -- flow_step
+pType           2                    # 1 -- tilted_plate ::: 2 -- plane_shear ::: 3 -- flow_step
 delta_p         4.0  
 input_vel       1	
 	
