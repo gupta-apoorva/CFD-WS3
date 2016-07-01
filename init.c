@@ -1,11 +1,13 @@
 #include "helper.h"
 #include "init.h"
 
-int read_parameters( const char *szFileName,       /* name of the file */
+int read_parameters( const char *szFileName,   /* name of the file */
                     double *Re,                /* reynolds number   */
+                    double *Pr,                /* Prandlt Number*/
                     double *UI,                /* velocity x-direction */
                     double *VI,                /* velocity y-direction */
                     double *PI,                /* pressure */
+                    double *TI,
                     double *GX,                /* gravitation x-direction */
                     double *GY,                /* gravitation y-direction */
                     double *t_end,             /* end time */
@@ -20,22 +22,25 @@ int read_parameters( const char *szFileName,       /* name of the file */
                     double *omg,               /* relaxation factor */
                     double *tau,               /* safety factor for time step*/
                     int  *itermax,             /* max. number of iterations  */
-		                               /* for pressure per time step */
                     double *eps,               /* accuracy bound for pressure*/
 		                double *dt_value,           /* time for output */
 		                int *wl,
                     int *wr,
                     int *wt,
    		              int *wb,
-                    int* pType,
-                    double *delta_p,
-                    double *input_vel
+                    double *beta,
+                    double *T_body,
+                    double *T_l,
+                    double *T_r,
+                    double *T_t,
+                    double *T_b
    		   )
 {
    READ_DOUBLE( szFileName, *xlength );
    READ_DOUBLE( szFileName, *ylength );
 
    READ_DOUBLE( szFileName, *Re    );
+   READ_DOUBLE( szFileName, *Pr );
    READ_DOUBLE( szFileName, *t_end );
    READ_DOUBLE( szFileName, *dt    );
 
@@ -55,15 +60,21 @@ int read_parameters( const char *szFileName,       /* name of the file */
    READ_DOUBLE( szFileName, *GX );
    READ_DOUBLE( szFileName, *GY );
    READ_DOUBLE( szFileName, *PI );
+   READ_DOUBLE( szFileName, *TI );
 
    READ_INT( szFileName, *wl);
    READ_INT( szFileName, *wr);
    READ_INT( szFileName, *wt);
    READ_INT( szFileName, *wb);
 
-   READ_INT( szFileName, *pType);
-   READ_DOUBLE( szFileName, *delta_p );
-   READ_DOUBLE( szFileName, *input_vel );
+   READ_DOUBLE( szFileName, *beta );
+   READ_DOUBLE( szFileName, *T_body );
+
+   READ_DOUBLE( szFileName, *T_l );
+   READ_DOUBLE( szFileName, *T_r );
+   READ_DOUBLE( szFileName, *T_t );
+   READ_DOUBLE( szFileName, *T_b );
+
 
    *dx = *xlength / (double)(*imax);
    *dy = *ylength / (double)(*jmax);
@@ -71,12 +82,12 @@ int read_parameters( const char *szFileName,       /* name of the file */
    return 1;
 }
 
-void init_uvp(double UI,double VI,double PI,int imax,int jmax,double **U,double **V,double **P)
+void init_uvpt(double UI,double VI,double PI,double TI, int imax,int jmax,double **U,double **V,double **P, double** T)
 {
 	init_matrix(U,0,imax+1,0,jmax+1,UI);
 	init_matrix(V,0,imax+1,0,jmax+1,VI);
 	init_matrix(P,0,imax+1,0,jmax+1,PI);
-
+  init_matrix(T,0,imax+1,0,jmax+1,TI);
 }
 
 

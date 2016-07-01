@@ -54,10 +54,14 @@ int main(int argn, char** args)
    double** U;
    double** V;
    double** P;
-   double Re;               
+   double** T;
+   double Re;
+   double Pr;
+   double beta;               
    double UI;                
    double VI;               
-   double PI;           
+   double PI; 
+   double TI;          
    double GX;                
    double GY;                
    double t_end;            
@@ -83,60 +87,47 @@ int main(int argn, char** args)
    int wr;
    int wt;
    int wb;
-   int problemtype;
-   double delta_p;
-   double input_vel;
-   int pType;
-
+   double T_body;
+   double T_l;
+   double T_r;
+   double T_t;
+   double T_b;
    
 	
 //setting the parameters
-	read_parameters( "problem.dat", &Re , &UI , &VI, &PI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax,
-		         &jmax, &alpha, &omg, &tau,&itermax, &eps, &dt_value, &wl, &wr, &wt, &wb,&pType,&delta_p,&input_vel);
+	read_parameters( "problem.dat", &Re ,&Pr, &UI , &VI, &PI, &TI, &GX, &GY, &t_end, &xlength, &ylength, &dt, &dx, &dy, &imax,
+		         &jmax, &alpha, &omg, &tau, &itermax, &eps, &dt_value, &wl, &wr, &wt, &wb, &beta, &T_body,&T_l, &T_r, &T_t, &T_b);
 
-// Reading the correct pgm file based of our input...
-	if (pType == TILTED_PLATE){
-          printf(" Problem Type Selected  =  TILTED_PLATE\n");
-	  pgm = read_pgm("mesh1.pgm");
-	}
-	else if (pType == PLANE_SHEAR){
-          printf(" Problem Type Selected  =  PLANE_SHEAR\n");
-	  pgm = read_pgm("mesh2.pgm");
-	}
-	else if (pType == FLOW_STEP){
-          printf(" Problem Type Selected  =  FLOW_OVER_STEP\n");
-	  pgm = read_pgm("mesh3.pgm");
-
-	}
-	else{printf("No pgm file found\n");}
-
+	  pgm = read_pgm("mesh.pgm");
+   printf("hello " );
 
 // Creating the arrays U,V and P
 	  U = matrix ( 0 , imax+1 , 0 , jmax+1 );
 	  V = matrix ( 0 , imax+1 , 0 , jmax+1 );
 	  P = matrix ( 0 , imax+1 , 0 , jmax+1 );
+    T = matrix ( 0 , imax+1 , 0 , jmax+1 );
         
 
 // Creating arrays for right side of pressure poissons equation (RS) and F and G
-	  RS = matrix ( 0,imax+1,0,jmax+1);
-	  F = matrix (0,imax+1,0,jmax+1);
-	  G = matrix (0,imax+1,0,jmax+1);
-	  FLAG = imatrix (0,imax+1,0,jmax+1);
+	  RS = matrix ( 0, imax+1, 0, jmax+1);
+	  F =  matrix ( 0, imax+1, 0, jmax+1);
+	  G =  matrix ( 0, imax+1, 0, jmax+1);
+	  FLAG = imatrix ( 0, imax+1, 0, jmax+1);
 
 // Initializing the arrays U,V,P,RS,F, G and FLAG field
-	  init_uvp( UI, VI,PI,imax, jmax,U,V,P);
-	  init_matrix(RS,0,imax+1,0,jmax+1,0);
-	  init_matrix(F,0,imax+1,0,jmax+1,0);
-  	  init_matrix(G,0,imax+1,0,jmax+1,0);
-  	  init_imatrix(FLAG,0,imax+1,0,jmax+1,C_F);
+	  init_uvpt( UI, VI,PI,TI,imax, jmax,U,V,P,T);
+	  init_matrix(RS, 0, imax+1, 0, jmax+1, 0);
+	  init_matrix(F, 0, imax+1, 0, jmax+1, 0);
+  	init_matrix(G, 0, imax+1, 0, jmax+1, 0);
+  	init_imatrix(FLAG, 0, imax+1, 0, jmax+1, C_F);
 
 // Setting the value to be C_b by checking whether it is a fluid or boundary...
 	  for (int i = 0; i < imax+2; ++i){
 	  for (int j = 0; j < jmax+2; ++j){
 	   	if (pgm[i][j] == 0)  
   		FLAG[i][j] = C_B;	
-  	  }
-  	  }
+  	}
+  	}
 
 // Making a dummy matrix as it will be required later to set the flag field...
 
@@ -151,37 +142,59 @@ int main(int argn, char** args)
   	for (int i = 0; i < imax+2; ++i)
         dummy[i+1][j+1] = FLAG[i][j];
         }
- 
+
 // Setting the proper values for our flagfield based on the boundary..
 
-	for (int j = 0; j < jmax+2; ++j){                
-	for (int i = 0; i < imax+2; ++i)
+  	for (int j = 0; j < jmax+2; ++j){                
+  	for (int i = 0; i < imax+2; ++i)
         FLAG[i][j] = 16*dummy[i+1][j+1] + 8*dummy[i+2][j+1] + 4*dummy[i][j+1] + 2*dummy[i+1][j] + dummy[i+1][j+2]; 				
-	}
+  	}
 
+   /* for (int i = 0 ; i<imax+2 ; i++)
+    {
+      for (int j = 0 ; j< jmax+1 ; j++)
+      {
+        printf ("%d ", FLAG[i][j]);
+      }
+      printf("\n");
+    }*/
 
-        double t=0;   // initialize the time
+    double t=0;   // initialize the time
   	int n = 0;    // number of time steps
 
 
+
+int count = 0;
 while (t<t_end)
   {
 
 // Calculating the proper time step to maintain stability...
 
-      calculate_dt(Re,tau,&dt,dx,dy,imax,jmax,U,V);    
+      calculate_dt(Re,Pr,tau,&dt,dx,dy,imax,jmax,U,V);    
 
 // Setting the boundary values for U,V,P depending on the flagfield...
 
-      boundaryvalues(imax, jmax, wl , wr, wt, wb , U, V , P, G, F, FLAG);
+      boundaryvalues(imax, jmax, wl , wr, wt, wb , TI, T_body, U, V , P, T, G, F, FLAG, T_l, T_r, T_t, T_b);
+
+    /*      for (int i = 0 ; i<imax+2 ; i++)
+    {
+      for (int j = 0 ; j< jmax+1 ; j++)
+      {
+        printf ("%f ", T[i][j]);
+      }
+      printf("\n");
+    }*/
 
 // Setting the special boundary values based on the problem type...
 
-      spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re, ylength, xlength);
+      //spec_boundary_val (pType, imax, jmax, U, V,delta_p,input_vel, Re, ylength, xlength);
+
+// Updating the T matrix for the nxt time step.
+      update_T(imax, jmax, Re, Pr, dt, dx, dy, alpha, T, U, V, FLAG);
 
 // Calculating the F and G matrix for only the fluid cells based on the flagfield...
 
-      calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, U, V, F, G,FLAG);
+      calculate_fg(Re,GX, GY, alpha, dt, dx, dy, imax, jmax, beta, U, V, T, F, G, FLAG);
 
 // calculating the right hand side of the pressure poissons for only fluid cells based on the flagfield...
 
@@ -211,13 +224,18 @@ while (t<t_end)
       t = t+dt;
       n = n+1;  
 
-//Writing the VTK file...
-      write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P,FLAG);
+      if (count % (int)dt_value == 0)
+      write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P, T, FLAG);
+      
+      count ++;
   }
+
+  //write_vtkFile("szProblem.vtk", n, xlength, ylength, imax, jmax,dx, dy, U, V, P, T, FLAG);
 
 free_matrix(U,0,imax+1,0,jmax+1);
 free_matrix(V,0,imax+1,0,jmax+1);
 free_matrix(P,0,imax+1,0,jmax+1);
+free_matrix(T,0,imax+1,0,jmax+1);
 free_matrix(RS,0,imax+1,0,jmax+1);
 free_matrix(F,0,imax+1,0,jmax+1);
 free_matrix(G,0,imax+1,0,jmax+1);

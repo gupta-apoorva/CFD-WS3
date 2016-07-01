@@ -2,6 +2,21 @@
 #define __UVP_H__
 
 
+void update_T(
+  int imax, 
+  int jmax, 
+  double Re, 
+  double Pr, 
+  double dt, 
+  double dx, 
+  double dy, 
+  double alpha, 
+  double** T, 
+  double** U, 
+  double** V, 
+  int** FLAG
+  );
+
 /**
  * Determines the value of U and G according to the formula
  *
@@ -23,22 +38,23 @@
  * @f$ i=1,\ldots,imax, \quad j=1,\ldots,jmax-1 @f$
  *
  */
-void calculate_fg(
-  double Re,
+void calculate_fg(double Re,
   double GX,
   double GY,
   double alpha,
   double dt,
-  double dx,
+  double dx,  
   double dy,
   int imax,
-  int jmax,
-  double **U,
-  double **V,
-  double **F,
-  double **G,
+  int jmax, 
+  double beta, 
+  double **U,  
+  double **V, 
+  double**T, 
+  double **F,  
+  double **G, 
   int** FLAG
-);
+  );
 
 
 /**
@@ -71,6 +87,7 @@ void calculate_rs(
  */
 void calculate_dt(
   double Re,
+  double Pr,
   double tau,
   double *dt,
   double dx,
@@ -108,5 +125,7 @@ void calculate_uv(
   double **P,
   int** FLAG
 );
+
+
 
 #endif
